@@ -341,7 +341,7 @@ public class DiscordApiImpl implements DiscordApi, InternalGloballyAttachableLis
                     this.websocketAdapter.isReady().whenComplete((readyReceived, throwable) -> {
                         if (readyReceived) {
                             if (accountType == AccountType.BOT) {
-                                getApplicationInfo().whenComplete((applicationInfo, exception) -> {
+                                requestApplicationInfo().whenComplete((applicationInfo, exception) -> {
                                     if (exception != null) {
                                         logger.error("Could not access self application info on startup!", exception);
                                     } else {
@@ -1099,13 +1099,13 @@ public class DiscordApiImpl implements DiscordApi, InternalGloballyAttachableLis
     }
 
     @Override
-    public CompletableFuture<ApplicationInfo> getApplicationInfo() {
+    public CompletableFuture<ApplicationInfo> requestApplicationInfo() {
         return new RestRequest<ApplicationInfo>(this, RestMethod.GET, RestEndpoint.SELF_INFO)
                 .execute(result -> new ApplicationInfoImpl(this, result.getJsonBody()));
     }
 
     @Override
-    public CompletableFuture<Webhook> getWebhookById(long id) {
+    public CompletableFuture<Webhook> requestWebhookById(long id) {
         return new RestRequest<Webhook>(this, RestMethod.GET, RestEndpoint.WEBHOOK)
                 .setUrlParameters(Long.toUnsignedString(id))
                 .execute(result -> new WebhookImpl(this, result.getJsonBody()));
@@ -1117,14 +1117,14 @@ public class DiscordApiImpl implements DiscordApi, InternalGloballyAttachableLis
     }
 
     @Override
-    public CompletableFuture<Invite> getInviteByCode(String code) {
+    public CompletableFuture<Invite> requestInviteByCode(String code) {
         return new RestRequest<Invite>(this, RestMethod.GET, RestEndpoint.INVITE)
                 .addQueryParameter("with_counts", "false")
                 .execute(result -> new InviteImpl(this, result.getJsonBody()));
     }
 
     @Override
-    public CompletableFuture<Invite> getInviteWithMemberCountsByCode(String code) {
+    public CompletableFuture<Invite> requestInviteWithMemberCountsByCode(String code) {
         return new RestRequest<Invite>(this, RestMethod.GET, RestEndpoint.INVITE)
                 .setUrlParameters(code)
                 .addQueryParameter("with_counts", "true")
@@ -1147,7 +1147,7 @@ public class DiscordApiImpl implements DiscordApi, InternalGloballyAttachableLis
     }
 
     @Override
-    public CompletableFuture<User> getUserById(long id) {
+    public CompletableFuture<User> requestUserById(long id) {
         return getCachedUserById(id)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> new RestRequest<User>(this, RestMethod.GET, RestEndpoint.USER)

@@ -565,7 +565,7 @@ public interface MessageAuthor extends DiscordEntity, Nameable {
      */
     default Optional<CompletableFuture<Webhook>> asWebhook() {
         if (isWebhook()) {
-            return Optional.of(getApi().getWebhookById(getId()));
+            return Optional.of(getApi().requestWebhookById(getId()));
         }
         return Optional.empty();
     }

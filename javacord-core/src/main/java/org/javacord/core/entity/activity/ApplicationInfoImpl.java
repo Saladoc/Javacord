@@ -84,6 +84,6 @@ public class ApplicationInfoImpl implements ApplicationInfo {
 
     @Override
     public CompletableFuture<User> getOwner() {
-        return api.getUserById(getOwnerId());
+        return api.requestUserById(getOwnerId());
     }
 }

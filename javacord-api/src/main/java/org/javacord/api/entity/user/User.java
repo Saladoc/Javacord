@@ -497,7 +497,7 @@ public interface User extends DiscordEntity, Messageable, Nameable, Mentionable,
 
     @Override
     default CompletableFuture<User> getLatestInstance() {
-        return getApi().getUserById(getId());
+        return getApi().requestUserById(getId());
     }
 
 }

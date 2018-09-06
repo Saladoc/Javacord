@@ -27,7 +27,7 @@ public interface AuditLogEntryTarget extends DiscordEntity {
      * @return The target as user.
      */
     default CompletableFuture<User> asUser() {
-        return getApi().getUserById(getId());
+        return getApi().requestUserById(getId());
     }
 
     /**

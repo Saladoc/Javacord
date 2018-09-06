@@ -266,7 +266,7 @@ public interface Webhook extends DiscordEntity, Updatable<Webhook> {
 
     @Override
     default CompletableFuture<Webhook> getLatestInstance() {
-        return getApi().getWebhookById(getId());
+        return getApi().requestWebhookById(getId());
     }
 
 }

@@ -247,9 +247,22 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      *
      * @return The owner of the application.
      * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
+     * @deprecated Method renamed to {@link #requestOwner()}.
+     *     This method will be removed in a future release.
      */
+    @Deprecated
     default CompletableFuture<User> getOwner() {
-        return getUserById(getOwnerId());
+        return requestOwner();
+    }
+
+    /**
+     * Requests the owner of the application.
+     *
+     * @return The owner of the application.
+     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
+     */
+    default CompletableFuture<User> requestOwner() {
+        return requestUserById(getOwnerId());
     }
 
     /**
@@ -314,16 +327,42 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * The method only works for bot accounts.
      *
      * @return The application info of the bot.
+     * @deprecated Method renamed to {@link #requestApplicationInfo()}.
+     *     This method will be removed in a future release.
      */
-    CompletableFuture<ApplicationInfo> getApplicationInfo();
+    @Deprecated
+    default CompletableFuture<ApplicationInfo> getApplicationInfo() {
+        return requestApplicationInfo();
+    }
+
+    /**
+     * Gets the application info of the bot.
+     * The method only works for bot accounts.
+     *
+     * @return The application info of the bot.
+     */
+    CompletableFuture<ApplicationInfo> requestApplicationInfo();
 
     /**
      * Gets a webhook by its id.
      *
      * @param id The id of the webhook.
      * @return The webhook with the given id.
+     * @deprecated Method renamed to {@link #requestWebhookById(long)}.
+     *     This method will be removed in a future release.
      */
-    CompletableFuture<Webhook> getWebhookById(long id);
+    @Deprecated
+    default CompletableFuture<Webhook> getWebhookById(long id) {
+        return requestWebhookById(id);
+    }
+
+    /**
+     * Requests a webhook by its id.
+     *
+     * @param id The id of the webhook.
+     * @return The webhook with the given id.
+     */
+    CompletableFuture<Webhook> requestWebhookById(long id);
 
     /**
      * Gets a collection with the ids of all unavailable servers.
@@ -337,16 +376,42 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      *
      * @param code The code of the invite.
      * @return The invite with the given code.
+     * @deprecated Method renamed to {@link #requestInviteByCode(String)}.
+     *     This method will be removed in a future release.
      */
-    CompletableFuture<Invite> getInviteByCode(String code);
+    @Deprecated
+    default CompletableFuture<Invite> getInviteByCode(String code) {
+        return requestInviteByCode(code);
+    }
 
     /**
      * Gets an invite by its code while requesting additional information.
      *
      * @param code The code of the invite.
      * @return The invite with the given code.
+     * @deprecated Method renamed to {@link #requestInviteWithMemberCountsByCode(String)}.
+     *     This method will be removed in a future release.
      */
-    CompletableFuture<Invite> getInviteWithMemberCountsByCode(String code);
+    @Deprecated
+    default CompletableFuture<Invite> getInviteWithMemberCountsByCode(String code) {
+        return requestInviteWithMemberCountsByCode(code);
+    }
+
+    /**
+     * Requests an invite by its code.
+     *
+     * @param code The code of the invite.
+     * @return The invite with the given code.
+     */
+    CompletableFuture<Invite> requestInviteByCode(String code);
+
+    /**
+     * Requests an invite by its code while requesting additional information.
+     *
+     * @param code The code of the invite.
+     * @return The invite with the given code.
+     */
+    CompletableFuture<Invite> requestInviteWithMemberCountsByCode(String code);
 
     /**
      * Creates a server builder which can be used to create servers.
@@ -536,20 +601,46 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      *
      * @param id The id of the user.
      * @return The user with the given id.
+     * @deprecated Method renamed to {@link #requestUserById(long)}.
+     *     This method will be removed in a future release.
      */
-    CompletableFuture<User> getUserById(long id);
+    @Deprecated
+    default CompletableFuture<User> getUserById(long id) {
+        return requestUserById(id);
+    }
 
     /**
      * Gets a user by its id.
      *
      * @param id The id of the user.
      * @return The user with the given id.
+     * @deprecated Method renamed to {@link #requestUserById(String)}.
+     *     This method will be removed in a future release.
      */
+    @Deprecated
     default CompletableFuture<User> getUserById(String id) {
+        return requestUserById(id);
+    }
+
+    /**
+     * Requests a user by its id.
+     *
+     * @param id The id of the user.
+     * @return The user with the given id.
+     */
+    CompletableFuture<User> requestUserById(long id);
+
+    /**
+     * Requests a user by its id.
+     *
+     * @param id The id of the user.
+     * @return The user with the given id.
+     */
+    default CompletableFuture<User> requestUserById(String id) {
         try {
-            return getUserById(Long.valueOf(id));
+            return requestUserById(Long.valueOf(id));
         } catch (NumberFormatException e) {
-            return getUserById(-1);
+            return requestUserById(-1);
         }
     }
 
@@ -729,9 +820,12 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * @param channel The channel of the message.
      * @return The message with the given id.
      * @see TextChannel#getMessageById(long)
+     * @deprecated Method renamed to {@link #requestMessageById(long, TextChannel)}.
+     *     This method will be removed in a future release.
      */
+    @Deprecated
     default CompletableFuture<Message> getMessageById(long id, TextChannel channel) {
-        return channel.getMessageById(id);
+        return requestMessageById(id, channel);
     }
 
     /**
@@ -741,8 +835,35 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * @param channel The channel of the message.
      * @return The message with the given id.
      * @see TextChannel#getMessageById(String)
+     * @deprecated Method renamed to {@link #requestMessageById(String, TextChannel)}.
+     *     This method will be removed in a future release.
      */
+    @Deprecated
     default CompletableFuture<Message> getMessageById(String id, TextChannel channel) {
+        return requestMessageById(id, channel);
+    }
+
+    /**
+     * Requests a message by its id.
+     *
+     * @param id The id of the message.
+     * @param channel The channel of the message.
+     * @return The message with the given id.
+     * @see TextChannel#getMessageById(long)
+     */
+    default CompletableFuture<Message> requestMessageById(long id, TextChannel channel) {
+        return channel.getMessageById(id);
+    }
+
+    /**
+     * Requests a message by its id.
+     *
+     * @param id The id of the message.
+     * @param channel The channel of the message.
+     * @return The message with the given id.
+     * @see TextChannel#getMessageById(String)
+     */
+    default CompletableFuture<Message> requestMessageById(String id, TextChannel channel) {
         return channel.getMessageById(id);
     }
 
