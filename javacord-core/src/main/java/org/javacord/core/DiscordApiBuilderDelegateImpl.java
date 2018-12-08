@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.javacord.api.AccountType;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.internal.DiscordApiBuilderDelegate;
+import org.javacord.api.listener.GloballyAttachableListener;
 import org.javacord.api.util.auth.Authenticator;
 import org.javacord.core.util.gateway.DiscordWebSocketAdapter;
 import org.javacord.core.util.logging.LoggerUtil;
@@ -21,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -88,6 +93,12 @@ public class DiscordApiBuilderDelegateImpl implements DiscordApiBuilderDelegate 
      * Whether Javacord should wait for all servers to become available on startup or not.
      */
     private volatile boolean waitForServersOnStartup = true;
+
+    /**
+     * The globally attachable listeners to register for every created DiscordApi instance.
+     */
+    private final Map<Class<? extends GloballyAttachableListener>,
+            List<? extends GloballyAttachableListener>> listeners = new ConcurrentHashMap<>();
 
     @Override
     public CompletableFuture<DiscordApi> login() {
@@ -259,5 +270,15 @@ public class DiscordApiBuilderDelegateImpl implements DiscordApiBuilderDelegate 
                     return null;
                 })
                 .whenComplete((nothing, throwable) -> api.disconnect());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends GloballyAttachableListener> void addListenerFor(Class<T> listenerClass, T listener) {
+        this.listeners.compute(listenerClass, (key, oldListeners) -> {
+            List<T> listeners = (oldListeners == null) ? new CopyOnWriteArrayList<>() : (List<T>) oldListeners;
+            listeners.add(listener);
+            return listeners;
+        });
     }
 }

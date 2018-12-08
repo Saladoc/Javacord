@@ -325,7 +325,7 @@ class DiscordApiImplTest extends Specification {
 
         and:
             def api = new DiscordApiImpl(AccountType.BOT, 'fakeBotToken', 0, 1, false, null, null, null, true, null,
-                    { [InetAddress.getLoopbackAddress()] })
+                    { [InetAddress.getLoopbackAddress()] }, [:])
 
         when:
             api.applicationInfo.join()

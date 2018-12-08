@@ -359,7 +359,7 @@ public class DiscordApiImpl implements DiscordApi, DispatchQueueSelector {
             CompletableFuture<DiscordApi> ready
     ) {
         this(accountType, token, currentShard, totalShards, waitForServersOnStartup, proxySelector, proxy,
-                proxyAuthenticator, trustAllCertificates, ready, null);
+                proxyAuthenticator, trustAllCertificates, ready, null, Collections.emptyMap());
     }
 
     /**
@@ -379,8 +379,10 @@ public class DiscordApiImpl implements DiscordApi, DispatchQueueSelector {
      * @param trustAllCertificates    Whether to trust all SSL certificates.
      * @param ready                   The future which will be completed when the connection to Discord was successful.
      * @param dns                     The DNS instance to use in the OkHttp client. This should only be used in testing.
+     * @param listenerMap             The listeners to pre-register.
      */
-    private DiscordApiImpl(
+    @SuppressWarnings("unchecked")
+    public DiscordApiImpl(
             AccountType accountType,
             String token,
             int currentShard,
@@ -391,7 +393,8 @@ public class DiscordApiImpl implements DiscordApi, DispatchQueueSelector {
             Authenticator proxyAuthenticator,
             boolean trustAllCertificates,
             CompletableFuture<DiscordApi> ready,
-            Dns dns
+            Dns dns,
+            Map<Class<? extends GloballyAttachableListener>, List<? extends GloballyAttachableListener>> listenerMap
     ) {
         this.accountType = accountType;
         this.token = token;
@@ -433,6 +436,9 @@ public class DiscordApiImpl implements DiscordApi, DispatchQueueSelector {
         }
         this.httpClient = httpClientBuilder.build();
         this.eventDispatcher = new EventDispatcher(this);
+
+        listenerMap.forEach((type, listeners) -> listeners.forEach(
+                listener -> addListener((Class<GloballyAttachableListener>) type, listener)));
 
         if (ready != null) {
             getThreadPool().getExecutorService().submit(() -> {

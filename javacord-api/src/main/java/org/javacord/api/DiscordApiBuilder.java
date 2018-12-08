@@ -2,6 +2,7 @@ package org.javacord.api;
 
 import org.javacord.api.event.server.ServerBecomesAvailableEvent;
 import org.javacord.api.internal.DiscordApiBuilderDelegate;
+import org.javacord.api.listener.GloballyAttachableListener;
 import org.javacord.api.util.auth.Authenticator;
 import org.javacord.api.util.internal.DelegateFactory;
 
@@ -286,4 +287,16 @@ public class DiscordApiBuilder {
     public CompletableFuture<DiscordApiBuilder> setRecommendedTotalShards() {
         return delegate.setRecommendedTotalShards().thenCompose(nothing -> CompletableFuture.completedFuture(this));
     }
+
+    /**
+     * Register an event listener early.
+     *
+     * @param listenerClass The type of the listener.
+     * @param listener The listener.
+     * @param <T> The type oft he listener.
+     */
+    public <T extends GloballyAttachableListener> void addListenerFor(Class<T> listenerClass, T listener) {
+        delegate.addListenerFor(listenerClass, listener);
+    }
+
 }

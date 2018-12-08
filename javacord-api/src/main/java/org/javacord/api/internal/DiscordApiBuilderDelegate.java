@@ -3,6 +3,7 @@ package org.javacord.api.internal;
 import org.javacord.api.AccountType;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.listener.GloballyAttachableListener;
 import org.javacord.api.util.auth.Authenticator;
 
 import java.net.Proxy;
@@ -142,4 +143,12 @@ public interface DiscordApiBuilderDelegate {
      */
     CompletableFuture<Void> setRecommendedTotalShards();
 
+    /**
+     * Register an event listener early.
+     *
+     * @param <T> The type oft he listener.
+     * @param listenerClass The type of the listener.
+     * @param listener The listener.
+     */
+    <T extends GloballyAttachableListener> void addListenerFor(Class<T> listenerClass, T listener);
 }
