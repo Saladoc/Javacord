@@ -381,6 +381,26 @@ def addConcreteListenerMethods(typeSolver, attachableInterface, listener, object
         addListenerMethod.removeBody()
     }
 
+    /* TODO Better way of getting the event name and ensure imports:
+        - the event
+        - org.javacord.util.event.Pipeline
+        - org.javacord.util.event.PipelineImpl
+     */
+    def eventName = listener.name[0..-9] + 'Event'
+
+    attachableListenerManagerInterface
+            .addMethod("add${eventName}Pipeline", Modifier.DEFAULT)
+            .setJavadocComment("""
+                Adds a pipeline for handling {@code $eventName}s.
+    
+                @return An event pipeline.
+            """.stripIndent())
+            .setType("Pipeline<$eventName>")
+            .createBody()
+            .addStatement("PipelineStart<$eventName> pipeline = PipelineImpl.start();")
+            .addStatement("add$listener.name(pipeline::accept);")
+            .addStatement("return pipeline;")
+
     def objectClass = objectClassByAttachableListenerManager."${attachableInterface.name}Manager"
     if (!objectClass) {
         throw new ConfigurationException("Found no type extending / implementing ${attachableInterface.name}Manager")

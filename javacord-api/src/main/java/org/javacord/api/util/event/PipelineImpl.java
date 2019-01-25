@@ -1,6 +1,4 @@
-package org.javacord.core.util.event;
-
-import org.javacord.api.util.event.Pipeline;
+package org.javacord.api.util.event;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +12,11 @@ public abstract class PipelineImpl<I, O> implements Pipeline<O>, Consumer<I> {
     /**
      * Create a starting point for a pipeline.
      *
-     * <p>This creates a no-op chain element to start the chain, so
      * @param <I> The type the Pipeline accepts.
      * @return A pipeline to start a chain with.
      */
-    public static <I> PipelineImpl<I,I> start() {
-        return mapping(Function.identity());
+    public static <I> PipelineStart<I> start() {
+        return new PipelineStart<>();
     }
 
     /**
@@ -88,6 +85,13 @@ public abstract class PipelineImpl<I, O> implements Pipeline<O>, Consumer<I> {
         sinks.add(consumer);
     }
 
+    public static class PipelineStart<T> extends PipelineImpl<T,T> {
+
+        @Override
+        public void accept(T input) {
+            sinks.forEach(sink -> sink.accept(input));
+        }
+    }
 
     private static class FilteringPipe<T> extends PipelineImpl<T,T> {
 
