@@ -61,9 +61,8 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
     String getToken();
 
     /**
-     * Gets the used token with the {@link AccountType#getTokenPrefix()}, that
-     * way it is usable directly in the authentication header for custom
-     * REST calls.
+     * Gets the used token with the bot prefix, that way it is usable directly
+     * in the authentication header for custom REST calls.
      *
      * @return The prefixed, used token.
      */
@@ -89,13 +88,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * @return A utility class to interact with uncached messages.
      */
     UncachedMessageUtil getUncachedMessageUtil();
-
-    /**
-     * Gets the type of the current account.
-     *
-     * @return The type of the current account.
-     */
-    AccountType getAccountType();
 
     /**
      * Gets the current global ratelimiter.
@@ -157,7 +149,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * The method only works for bot accounts!
      *
      * @return An invite link for this bot.
-     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
      */
     default String createBotInvite() {
         return new BotInviteBuilder(getClientId()).build();
@@ -169,7 +160,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      *
      * @param permissions The permissions which should be granted to the bot.
      * @return An invite link for this bot.
-     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
      */
     default String createBotInvite(Permissions permissions) {
         return new BotInviteBuilder(getClientId()).setPermissions(permissions).build();
@@ -313,7 +303,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * Gets the id of the application's owner.
      *
      * @return The id of the application's owner.
-     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
      */
     long getOwnerId();
 
@@ -321,7 +310,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * Gets the owner of the application.
      *
      * @return The owner of the application.
-     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
      */
     default CompletableFuture<User> getOwner() {
         return getUserById(getOwnerId());
@@ -331,7 +319,6 @@ public interface DiscordApi extends GloballyAttachableListenerManager {
      * Gets the client id of the application.
      *
      * @return The client id of the application.
-     * @throws IllegalStateException If the current account is not {@link AccountType#BOT}.
      */
     long getClientId();
 
