@@ -71,4 +71,15 @@ public class UnicodeEmojiImpl implements Emoji {
     public String toString() {
         return String.format("UnicodeEmoji (emoji: %s)", emoji);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return  (this == obj)
+                || ((obj instanceof Emoji) && equalsEmoji((Emoji) obj));
+    }
+
+    @Override
+    public int hashCode() {
+        return emoji.hashCode();
+    }
 }
